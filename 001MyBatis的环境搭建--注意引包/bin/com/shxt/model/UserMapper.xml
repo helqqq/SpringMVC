@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace包名 不能重复 -->
+  <mapper namespace="shxt.xy17">
+       <!-- 返回的是List<Map<String,Object>>结果集 -->
+      <select id="list"  resultType="map"> 
+        select * from web_user;
+      </select>
+      <select id="load" parameterType="int" resultType="map">
+            select * from web_user where id = #{id};
+       </select>
+       <select id="load_map" parameterType="map" resultType="map">
+            select * from web_user where id = #{id} and account = #{account}
+       </select>
+       <select id="count" resultType="int">
+            select count(*) from web_user;
+       </select>
+       <select id="list_user" resultType="com.shxt.model.User">
+            select * from web_user;
+       </select>
+       <insert id="add" parameterType="map" >
+            INSERT INTO web_user ( account, user_name, PASSWORD )
+            VALUES  (#{account},#{user_name},#{password} );
+       </insert>
+  </mapper>
