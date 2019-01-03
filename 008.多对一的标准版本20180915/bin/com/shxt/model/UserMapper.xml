@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.dao.UserDao">
+    <resultMap type="com.shxt.model.User" id="baseResultMap">
+        <id property="id" javaType="java.lang.Integer" column="id" jdbcType="INTEGER"/>
+        <result property="user_name" column="user_name"/>
+        <result property="account" column="account" />
+        <result property="password" column="password"/>
+        <result property="loginDate" javaType="java.util.Date" column="update_date" jdbcType="TIMESTAMP"/>
+        <result property="fk_role_id" column="fk_role_id"/>
+    </resultMap>
+    <resultMap type="com.shxt.model.User" id="SimpleUserResultMap" extends="baseResultMap">
+            <association property="role" javaType="com.shxt.model.Role" 
+                resultMap="com.shxt.dao.RoleDao.baseResultMap"
+            />
+    </resultMap>
+    <select id="listAllUser" resultMap="SimpleUserResultMap">
+        <![CDATA[
+                SELECT
+                    u.*,
+                    r.* 
+                FROM
+                    web_user u
+                    LEFT JOIN sys_role r ON u.fk_role_id = r.role_id 
+                    LIMIT 0,5
+        ]]>
+    </select>
+</mapper>

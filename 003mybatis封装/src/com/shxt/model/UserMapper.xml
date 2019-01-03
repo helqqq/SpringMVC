@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.dao.UserDao">
+   <select id="list" resultType="com.shxt.model.User">
+    select * from web_user
+   </select>
+   <select id="query" resultType="com.shxt.model.User" parameterType="string">
+        select * from web_user where account = #{account}
+   </select>
+   <select id="query02" resultType="com.shxt.model.User" parameterType="map">
+        select * from web_user where account = #{account} and password = #{password}
+   </select>
+   
+   <select id="query03" resultType="com.shxt.model.User" >
+     <!--    select * from web_user where account = #{account} and id = #{id} -->   
+       select * from web_user where account = #{param1} and id = #{param2}
+   </select>
+   <select id="query04" resultType="com.shxt.model.User">
+          select * from web_user where account = #{0} and id = #{1}
+   </select>
+   <select id="query05" resultType="com.shxt.model.User" parameterType="map">
+        select * from web_user where account =#{account} order by ${id}
+   </select>
+</mapper>

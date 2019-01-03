@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.dao.UserDao">
+    <sql id="user_alias">
+         user_name,account,password,create_date ,update_date
+    </sql>
+    <sql id="user_alias_2">
+         ${u}.user_name,${u}.account,${u}.password
+    </sql>
+    <resultMap type="com.shxt.model.User" id="resultMapBaseUser">
+        <id property="id" javaType="java.lang.Integer" column="id" jdbcType="INTEGER" />
+        <result property="createDate" javaType="java.sql.Timestamp" column="create_date" jdbcType="TIMESTAMP"/>
+        <result property="updateDate" javaType="java.sql.Timestamp" column="update_date" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <select id="load"  resultMap="resultMapBaseUser">
+       SELECT 
+        <include refid="user_alias"/>
+         FROM web_user WHERE id = #{id}
+  </select>
+     <select id="load2" resultMap="resultMapBaseUser">
+        select 
+            <include refid="user_alias_2">
+                <property name="u" value="user"/>
+            </include>
+         from web_user user where id = #{id}
+     </select>
+  
+  
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.dao.UserDao">
+   <select id="wherelike01" resultType="com.shxt.model.User" parameterType="string">
+       SELECT * FROM web_user WHERE user_name like  '${user_name}%'
+   </select>
+   <select id="wherelike02" parameterType="string" resultType="com.shxt.model.User">
+        SELECT * FROM web_user WHERE user_name like #{user_name}
+   </select>
+   <!-- 推荐使用 -->
+      <select id="wherelike03" parameterType="string" resultType="com.shxt.model.User">
+       SELECT * FROM web_user WHERE user_name like concat( '王', '%' )
+   </select>
+   <select id="moreLike01" resultType="com.shxt.model.User">
+       SELECT * FROM web_user WHERE 1=1
+            <if test="user_name != null and user_name.length() > 0 "><!-- &gt; -->
+                AND user_name LIKE concat( #{user_name}, '%' ) 
+            </if>
+           <if test="account != null &amp;&amp; account != ''">
+            AND account LIKE concat(#{account},'%');
+            </if>
+   </select>
+   <!-- where语句会判定sql最前面是否有 AND和一个空格，自动删除 -->
+   <select id="morelike02" resultType="com.shxt.model.User">
+         SELECT * FROM web_user 
+         <where> 
+             <if test="user_name != null and user_name.length() > 0 "><!-- &gt; -->
+                user_name LIKE concat( #{user_name}, '%' ) 
+            </if>
+           <if test="account != null &amp;&amp; account != ''">
+            AND account LIKE concat(#{account},'%')
+            </if>
+         </where>
+   </select>
+   <select id="moreLike03" resultType="com.shxt.model.User">
+        SELECT * FROM web_user 
+        <where>
+                <choose>
+                    <when test="user_name != null and user_name.length() > 0">
+                        AND user_name like concat(#{user_name},'%')
+                    </when>
+                    <when test="account != null &amp;&amp; account != ''">
+                        AND account like concat(#{account},'%')
+                    </when>
+                </choose>
+        </where>
+   </select>
+   <select id="moreLike04" resultType="com.shxt.model.User">
+        SELECT * FROM web_user 
+            <trim prefix="WHERE"  prefixOverrides="AND |OR ">
+                <if test="user_name != null and user_name.length() > 0">
+                    AND user_name like concat(#{user_name},'%')
+                </if>
+                <if test="account != null &amp;&amp; account != ''">
+                    AND account like concat(#{account},'%')
+                </if>
+            </trim>
+   </select>
+   <!-- set 判定语句最后是否含有,如果包含则删掉 -->
+   <update id="update01"  parameterType="com.shxt.model.User" >
+        update web_user 
+        <set>
+                <if test="user_name != null and user_name != ''">
+                    user_name = #{user_name},
+                </if>
+                <if test="account != null and account != ''">
+                    account = #{account},
+                </if>
+                <if test="password != null and password != ''">
+                    password = #{password},
+                </if>
+        </set>
+        WHERE id = #{id}
+   </update>
+   <insert id="add01"  parameterType="com.shxt.model.User" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO web_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="user_name != null and user_name != ''">user_name,</if>
+            <if test="account != null and account != ''">account ,</if>
+            <if test="password != null and password != ''"> password,</if>
+             <if test="createDate != null "> create_date,</if>
+             <if test="updateDate!= null"> update_date,</if>
+         </trim>
+       <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="user_name != null and user_name != ''"> #{user_name},</if>
+            <if test="account != null and account != ''"> #{account},</if>
+             <if test="password != null and password != ''">  #{password},</if>
+              <if test="createDate != null "> #{createDate},</if>
+              <if test="updateDate!= null">#{updateDate},</if>
+       </trim>
+   </insert>
+   <select id="foreach02" resultType="com.shxt.model.User" >
+        select * from web_user where user_id in
+        <foreach collection="array" open="(" close=")" separator="," index="i" item="item">
+            #{item}
+        </foreach>
+   </select>
+   <insert id="insertMore"  keyProperty="id" useGeneratedKeys="true">
+        insert into web_user(user_name,account,password,create_date) values
+        <foreach collection="list"  separator="," item="user">
+            (#{user.user_name},#{user.account},#{user.password},#{user.createDate})
+        </foreach>
+        
+   </insert>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <select id="foreach01" resultType="com.shxt.model.User">
+        select *from web_user where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">   <!-- array|list|key属性 -->
+            #{id}
+        </foreach>
+   </select>
+   <insert id="foreachinsert" parameterType="list">
+        insert into web_user(user_name,account,password)
+        values
+        <foreach collection="list" item="user">
+            (#{user.user_name},#{user.account},#{user}.password)
+        </foreach>
+   </insert>
+   <select id="listlt" parameterType="int" resultType="com.shxt.model.User">
+        <!-- 小于号的标准写法，不支持标签 -->
+        <![CDATA[
+            select * from web_user where id < 6
+        ]]>
+   </select>
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.shxt.dao.UserDao">
+  
+  <select id="queryAllUser" resultMap="userResultMap2">
+    SELECT
+        u.*, r.* 
+    FROM
+    web_user u
+    LEFT JOIN sys_role r ON u.fk_role_id = r.role_id limit 0,5
+  </select>
+  
+  <resultMap type="com.shxt.model.User" id="userResultMap2">
+    <id property="user_id" javaType="java.lang.Integer" column="id" jdbcType="INTEGER"/>
+        <result property="userName" javaType="java.lang.String" column="user_name" jdbcType="VARCHAR"/>
+        <result property="pwd" javaType="java.lang.String" column="password" jdbcType="VARCHAR"/>
+        <result property="loginDate" javaType="java.util.Date" column="update_date" jdbcType="TIMESTAMP"/>
+        <result property="fk_role_id" javaType="java.lang.Integer" column="fk_role_id" jdbcType="INTEGER"/>
+        <association property="fkRole" javaType="com.shxt.model.Role"
+            resultMap="com.shxt.dao.RoleDao.roleResultMapper"
+        >
+           <result property="role_name" column="role_name"/>
+        </association>
+  </resultMap>
+    <select id="getMapList" resultType="hashmap">
+          select user_name userName from web_user
+    </select>
+    <select id="getUserList" resultType="com.shxt.model.User">
+        select id user_id,
+                 user_name userName,
+                 password pwd,
+                 update_date loginDate,
+                 account
+                 from web_user;
+    </select>
+    <!-- 结果集映射 -->
+    <resultMap type="com.shxt.model.User" id="userResultMap" autoMapping="false">
+        <id property="user_id" javaType="java.lang.Integer" column="id" jdbcType="INTEGER"/>
+        <result property="userName" javaType="java.lang.String" column="user_name" jdbcType="VARCHAR"/>
+        <result property="pwd" javaType="java.lang.String" column="password" jdbcType="VARCHAR"/>
+        <result property="loginDate" javaType="java.util.Date" column="update_date" jdbcType="TIMESTAMP"/>
+        <result property="fk_role_id" javaType="java.lang.Integer" column="fk_role_id" jdbcType="INTEGER"/>
+        <association property="fkRole" javaType="com.shxt.model.Role" 
+            select="queryRoleById" column="fk_role_id"
+        >
+            <result property="role_id" column="role_id"/>
+            <result property="role_name" column="role_name"/>
+        </association>
+    </resultMap>
+    <select id="queryRoleById" parameterType="int" resultType="com.shxt.model.Role">
+        select *
+         from sys_role where role_id = #{role_id}
+    </select>
+    <select id="getUserListByResultMap" resultMap="userResultMap">
+        select id user_id,
+                 user_name userName,
+                 password pwd,
+                 update_date loginDate,
+                 account
+                 from web_user;
+    </select>
+    <sql id="user_column">
+        ${alias}.id user_id,
+        ${alias}.account ,
+       ${alias}.user_name userName,
+       ${alias}.password pwd,
+        ${alias}.update_date loginDate,
+       ${alias}.fk_role_id
+    </sql>
+      <select id="queryUserByPk" parameterType="int" resultMap="userResultMap">
+        select *
+            <include refid="user_column">
+                <property name="alias" value="web_user"/>
+            </include>
+         from web_user where web_user.id = #{id}
+    </select>
+  <!--   <select id="queryUserByPk" parameterType="int" resultType="com.shxt.model.User">
+        select 
+            <include refid="user_column"/>
+         from web_user where web_user.id = #{id}
+    </select> -->
+    
+  </mapper>

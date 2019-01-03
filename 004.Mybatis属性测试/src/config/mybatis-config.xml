@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="config/jdbc.properties"/>
+    <typeAliases>
+        <!-- 整体扫描包：UserMapper 可以直接调用User -->
+        <package name="com.shxt.model"/>
+      <!--   <typeAlias type="com.shxt.model.User" alias="shxt"/> -->
+    </typeAliases>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="com/shxt/model/UserMapper.xml"/>
+  </mappers>
+</configuration>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shxt.role.dao.RoleDao" >
+    <resultMap id="BaseResultMap" type="com.shxt.role.model.Role" >
+        <id column="role_id" property="role_id" jdbcType="INTEGER" />
+        <result column="role_name" property="role_name" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="sys_role_columns" >
+        role_id, role_name
+    </sql>
+    <select id="load" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select 
+        <include refid="sys_role_columns" />
+        from sys_role
+        where role_id = #{role_id,jdbcType=INTEGER}
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer" >
+        delete from sys_role
+        where role_id = #{role_id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.shxt.role.model.Role" >
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="role_id != null" >
+                role_id,
+            </if>
+            <if test="role_name != null" >
+                role_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="role_id != null" >
+                #{role_id,jdbcType=INTEGER},
+            </if>
+            <if test="role_name != null" >
+                #{role_name,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="update" parameterType="com.shxt.role.model.Role" >
+        update sys_role
+        <set >
+            <if test="role_name != null" >
+                role_name = #{role_name,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where role_id = #{role_id,jdbcType=INTEGER}
+    </update>
+</mapper>
