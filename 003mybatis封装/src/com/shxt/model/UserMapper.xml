@@ -21,6 +21,6 @@
           select * from web_user where account = #{0} and id = #{1}
    </select>
    <select id="query05" resultType="com.shxt.model.User" parameterType="map">
-        select * from web_user where account =#{account} order by ${id}
+        select * from web_user where account =#{account} order by id
    </select>
 </mapper>
